@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vtm-ingress
+  labels:
+    app: demo
+  annotations:
+    kubernetes.io/ingress.class: "vtm"
+spec:
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /echo
+            backend:
+              serviceName: echoheaders
+              servicePort: 8080
+          - path: /
+            backend:
+              serviceName: default-http-backend
+              servicePort: 8080

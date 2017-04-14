@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: haproxy-ingress
+  labels:
+    app: demo
+  annotations:
+# This tells to only use the Nginx Ingress Controller
+    kubernetes.io/ingress.class: "haproxy"
+spec:
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /echo
+            backend:
+              serviceName: echoheaders
+              servicePort: 8080
+          - path: /
+            backend:
+              serviceName: default-http-backend
+              servicePort: 8080
+    - host: foobar.com
+      http:
+        paths:
+          - path: /echo2
+            backend:
+              serviceName: echoheaders2
+              servicePort: 8080

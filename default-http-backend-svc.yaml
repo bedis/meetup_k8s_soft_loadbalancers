@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-http-backend
+  namespace: default
+  labels:
+    app: default-http-backend
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: default-http-backend
+  clusterIP: None

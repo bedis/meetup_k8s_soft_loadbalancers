@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: haproxy-ingress-controller
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        k8s-app: haproxy-ingress-lb
+    spec:
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+        - name: myregistrykey
+      containers:
+        - name: haproxy-ingress-controller
+          image: myregistry.docker/haproxy-controller:latest
+          #imagePullPolicy: Always
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBE_APISERVER
+              value: https://kube-controller1.kvm
+            - name: KUBE_LBNAME
+              value: haproxy-ingress
+            - name: LBDRIVER
+              value: haproxy
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+            - name: https
+              protocol: TCP
+              containerPort: 443
+            - name: stats
+              protocol: TCP
+              containerPort: 8001
